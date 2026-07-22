@@ -8,6 +8,7 @@ const required = [
   "apps/backend/railway.json",
   "apps/storefront/Dockerfile",
   "apps/storefront/railway.json",
+  "apps/storefront/src/app/api/health/route.ts",
   "services/enthusiast/server/Dockerfile",
   "services/enthusiast/server/railway.json",
   "services/enthusiast/server/railway.worker.json",
