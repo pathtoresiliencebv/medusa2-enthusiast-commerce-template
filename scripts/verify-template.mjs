@@ -10,6 +10,8 @@ const required = [
   "apps/storefront/railway.json",
   "services/enthusiast/server/Dockerfile",
   "services/enthusiast/server/railway.json",
+  "services/enthusiast/server/railway.worker.json",
+  "services/enthusiast/server/railway.beat.json",
   "services/enthusiast/frontend/Dockerfile",
   "services/enthusiast/frontend/railway.json",
 ]
