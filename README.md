@@ -47,9 +47,9 @@ No LVRO production database, customer information, supplier catalog, scraped rev
 
 ## One-click Railway deployment
 
-[![Deploy on Railway](https://railway.com/button.svg)](RAILWAY_TEMPLATE_URL)
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/medusa-2-enthusiast-commerce)
 
-The button URL is updated after the Railway template is published. See [docs/RAILWAY_TEMPLATE.md](docs/RAILWAY_TEMPLATE.md) for the service map, required variables and first-deploy checklist.
+Use the button to create a fresh stack. See [docs/RAILWAY_TEMPLATE.md](docs/RAILWAY_TEMPLATE.md) for the service map, required variables and first-deploy checklist.
 
 ## Local development
 
