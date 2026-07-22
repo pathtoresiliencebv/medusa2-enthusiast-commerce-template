@@ -1,22 +1,22 @@
-FROM node:20
+FROM node:20 AS builder
 
 ARG VITE_API_BASE
 ARG VITE_WS_BASE
-ARG PORT
 
 ENV VITE_API_BASE=$VITE_API_BASE
 ENV VITE_WS_BASE=$VITE_WS_BASE
-ENV PORT=$PORT
 
 WORKDIR /app
 
 COPY package.json pnpm-lock.yaml ./
-RUN npm install -g pnpm
-
-RUN pnpm install
+RUN npm install -g pnpm && pnpm install --frozen-lockfile
 
 COPY . .
+RUN pnpm build
 
-RUN chmod u+x /app/docker-entrypoint.sh
+FROM nginx:1.27-alpine AS runner
 
-ENTRYPOINT ["/app/docker-entrypoint.sh"]
+COPY --from=builder /app/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 80
