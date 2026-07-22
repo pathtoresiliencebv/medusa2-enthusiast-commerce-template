@@ -1,0 +1,189 @@
+"use client"
+import { setAddresses } from "@lib/data/cart"
+import useToggleState from "@lib/hooks/use-toggle-state"
+import compareAddresses from "@lib/util/compare-addresses"
+import { CheckCircleSolid } from "@medusajs/icons"
+import { HttpTypes } from "@medusajs/types"
+import Divider from "@modules/common/components/divider"
+import { Heading, Text } from "@modules/common/components/ui"
+import Spinner from "@modules/common/icons/spinner"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { useActionState } from "react"
+import BillingAddress from "../billing_address"
+import ErrorMessage from "../error-message"
+import ShippingAddress from "../shipping-address"
+import { SubmitButton } from "../submit-button"
+
+const Addresses = ({
+  cart,
+  customer,
+}: {
+  cart: HttpTypes.StoreCart | null
+  customer: HttpTypes.StoreCustomer | null
+}) => {
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const pathname = usePathname()
+
+  const currentStep = searchParams.get("step")
+  const isOpen = !currentStep || currentStep === "address"
+
+  const { state: sameAsBilling, toggle: toggleSameAsBilling } = useToggleState(
+    cart?.shipping_address && cart?.billing_address
+      ? compareAddresses(cart?.shipping_address, cart?.billing_address)
+      : true
+  )
+
+  const handleEdit = () => {
+    router.push(pathname + "?step=address")
+  }
+
+  const [message, formAction] = useActionState(setAddresses, null)
+
+  return (
+    <div className="bg-white">
+      <div className="flex flex-row items-center justify-between mb-6">
+        <Heading
+          level="h2"
+          className="font-display flex flex-row items-baseline gap-x-2 text-2xl"
+        >
+          Bezorgadres
+          {!isOpen && <CheckCircleSolid />}
+        </Heading>
+        {!isOpen && cart?.shipping_address && (
+          <Text>
+            <button
+              onClick={handleEdit}
+              className="text-ui-fg-interactive hover:text-ui-fg-interactive-hover"
+              data-testid="edit-address-button"
+            >
+              Wijzigen
+            </button>
+          </Text>
+        )}
+      </div>
+      {isOpen ? (
+        <form action={formAction}>
+          <div className="pb-8">
+            <ShippingAddress
+              customer={customer}
+              checked={sameAsBilling}
+              onChange={toggleSameAsBilling}
+              cart={cart}
+            />
+
+            {!sameAsBilling && (
+              <div>
+                <Heading
+                  level="h2"
+                  className="font-display gap-x-4 pb-6 pt-8 text-2xl"
+                >
+                  Factuuradres
+                </Heading>
+
+                <BillingAddress cart={cart} />
+              </div>
+            )}
+            <SubmitButton
+              size="large"
+              className="brand-button mt-6 min-h-14 w-full !rounded-full !bg-[#6554c0] !text-white hover:!bg-[#4e3fa5]"
+              data-testid="submit-address-button"
+            >
+              Verder naar bezorging
+            </SubmitButton>
+            <ErrorMessage error={message} data-testid="address-error-message" />
+          </div>
+        </form>
+      ) : (
+        <div>
+          <div className="text-small-regular">
+            {cart && cart.shipping_address ? (
+              <div>
+                <div className="grid w-full gap-5 small:grid-cols-3">
+                  <div
+                    className="flex flex-col"
+                    data-testid="shipping-address-summary"
+                  >
+                    <Text className="txt-medium-plus text-ui-fg-base mb-1">
+                      Bezorgadres
+                    </Text>
+                    <Text className="txt-medium text-ui-fg-subtle">
+                      {cart.shipping_address.first_name}{" "}
+                      {cart.shipping_address.last_name}
+                    </Text>
+                    <Text className="txt-medium text-ui-fg-subtle">
+                      {cart.shipping_address.address_1}{" "}
+                      {cart.shipping_address.address_2}
+                    </Text>
+                    <Text className="txt-medium text-ui-fg-subtle">
+                      {cart.shipping_address.postal_code},{" "}
+                      {cart.shipping_address.city}
+                    </Text>
+                    <Text className="txt-medium text-ui-fg-subtle">
+                      {cart.shipping_address.country_code?.toUpperCase()}
+                    </Text>
+                  </div>
+
+                  <div
+                    className="flex flex-col"
+                    data-testid="shipping-contact-summary"
+                  >
+                    <Text className="txt-medium-plus text-ui-fg-base mb-1">
+                      Contactgegevens
+                    </Text>
+                    <Text className="txt-medium text-ui-fg-subtle">
+                      {cart.shipping_address.phone}
+                    </Text>
+                    <Text className="txt-medium text-ui-fg-subtle">
+                      {cart.email}
+                    </Text>
+                  </div>
+
+                  <div
+                    className="flex flex-col"
+                    data-testid="billing-address-summary"
+                  >
+                    <Text className="txt-medium-plus text-ui-fg-base mb-1">
+                      Factuuradres
+                    </Text>
+
+                    {sameAsBilling ? (
+                      <Text className="txt-medium text-ui-fg-subtle">
+                        Factuur- en bezorgadres zijn gelijk.
+                      </Text>
+                    ) : (
+                      <>
+                        <Text className="txt-medium text-ui-fg-subtle">
+                          {cart.billing_address?.first_name}{" "}
+                          {cart.billing_address?.last_name}
+                        </Text>
+                        <Text className="txt-medium text-ui-fg-subtle">
+                          {cart.billing_address?.address_1}{" "}
+                          {cart.billing_address?.address_2}
+                        </Text>
+                        <Text className="txt-medium text-ui-fg-subtle">
+                          {cart.billing_address?.postal_code},{" "}
+                          {cart.billing_address?.city}
+                        </Text>
+                        <Text className="txt-medium text-ui-fg-subtle">
+                          {cart.billing_address?.country_code?.toUpperCase()}
+                        </Text>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div>
+                <Spinner />
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+      <Divider className="mt-8" />
+    </div>
+  )
+}
+
+export default Addresses
