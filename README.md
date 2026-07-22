@@ -1,6 +1,34 @@
-# Medusa 2 + Enthusiast Commerce Template
+# Deploy and Host Medusa 2 + Enthusiast Commerce
 
 A reusable production starter for a branded Dutch/Belgian webshop. It combines a Medusa 2 backend, a conversion-focused Next.js storefront and the complete Enthusiast AI stack.
+
+## About Hosting
+
+This template deploys the complete commerce stack to Railway. Medusa and Enthusiast each receive an isolated PostgreSQL database and Redis instance. The public storefront, Medusa API/Admin and Enthusiast interface receive their own service and health check. Internal service references and generated secrets are configured automatically.
+
+## Why Deploy
+
+Use this template when you want a repeatable webshop foundation without rebuilding hosting, databases, feeds, inventory controls and Enthusiast integration for every new brand. The services are separated so they can scale, restart and be maintained independently.
+
+## Common Use Cases
+
+- Launch a new branded Medusa 2 webshop for the Netherlands or Belgium.
+- Reuse the LVRO-style commerce workflow without copying production data.
+- Manage products, inventory, sourcing costs and Shopping approval in one backend.
+- Add Enthusiast AI with separate API, worker, scheduler and frontend services.
+- Prepare Google Shopping, Meta and JSON feeds behind quality gates.
+
+## Dependencies for Medusa 2 + Enthusiast Commerce
+
+The template uses public, versioned container images built from this repository. A fresh deployment does not require a separate GitHub App connection or local build environment.
+
+### Deployment Dependencies
+
+- Railway account with capacity for ten services and four persistent volumes.
+- PostgreSQL and Redis services included by the template.
+- A Medusa publishable API key created after the first backend boot.
+- Public backend and storefront domains for CORS configuration.
+- Payment, email and analytics credentials only when those integrations are enabled.
 
 ## Included
 
